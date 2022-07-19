@@ -33,23 +33,11 @@ static void_t handle_binding(handler_t *handler, option_t *option)
         container_set_binding(handler->container, source, target);
 }
 
-// function: handle_network
+// function: handle_command
 //------------------------------------------------------------------------------
-static void_t handle_network(handler_t *handler, option_t *option)
+static void_t handle_command(handler_t *handler, option_t *option)
 {
-        char_t *address = option_get_value(option);
-        char_t *gateway = NULL;
-
-        for (char_t *separator = address; *separator; ++separator)
-        {
-                if (*separator == ARGUMENT_SEPARATOR)
-                {
-                        gateway = separator + 1;
-                        *separator = 0;
-                }
-        }
-
-        container_set_network(handler->container, address, gateway);
+        container_set_command(handler->container, option_get_value(option));
 }
 
 // function: handle_directory
@@ -59,21 +47,21 @@ static void_t handle_directory(handler_t *handler, option_t *option)
         container_set_directory(handler->container, option_get_value(option));
 }
 
-// function: handle_command
+// function: handle_masquerade
 //------------------------------------------------------------------------------
-static void_t handle_command(handler_t *handler, option_t *option)
+static void_t handle_masquerade(handler_t *handler, option_t *option)
 {
-        container_set_command(handler->container, option_get_value(option));
+        container_set_masquerade(handler->container, option_get_value(option));
 }
 
 // variable: handlers
 //------------------------------------------------------------------------------
 static handler_function_t handlers[] =
 {
-        [ OPTION_ID_BINDING ]   = handle_binding,
-        [ OPTION_ID_COMMAND ]   = handle_command,
-        [ OPTION_ID_NETWORK ]   = handle_network,
-        [ OPTION_ID_DIRECTORY ] = handle_directory,
+        [ OPTION_ID_BINDING ]    = handle_binding,
+        [ OPTION_ID_COMMAND ]    = handle_command,
+        [ OPTION_ID_DIRECTORY ]  = handle_directory,
+        [ OPTION_ID_MASQUERADE ] = handle_masquerade,
 };
 
 // function: handler_create

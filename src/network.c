@@ -35,83 +35,89 @@ static inline void_t execute(char_t *format, ...)
 //------------------------------------------------------------------------------
 void_t network_create(network_t *network)
 {
-        network->address                = NULL;
-        network->gateway                = NULL;
-        network->interface_host         = DEFAULT_INTERFACE_HOST;
-        network->interface_container    = DEFAULT_INTERFACE_CONTAINER;
+        network->masquerade = NULL;
 }
 
-// function: network_destroy
+// function: network_set_masquerade
 //------------------------------------------------------------------------------
-void_t network_destroy(network_t *network)
+void_t network_set_masquerade(network_t *network, char_t *masquerade)
 {
-        if (!network->address || !network->gateway)
-        {
-                return;
-        }
-
-        // procedure: destroy host and container interface
-        //----------------------------------------------------------------------
-        execute("ip link delete %s", network->interface_host);
-
-        // procedure: destroy namespace
-        //----------------------------------------------------------------------
-        execute("ip netns delete netns0");
-}
-
-// function: network_set_address
-//------------------------------------------------------------------------------
-void_t network_set_address(network_t *network, char_t *address, char_t *gateway)
-{
-        network->address = address;
-        network->gateway = gateway;
+        network->masquerade = masquerade;
 }
 
 // function: network_configure
 //------------------------------------------------------------------------------
 void_t network_configure(network_t *network, i32_t pid)
 {
-        if (!network->address || !network->gateway)
+        if (!network->masquerade)
         {
                 return;
         }
 
+        // procedure: chose subnet
+        //----------------------------------------------------------------------
+        // TODO: come up with way to generate unique subnet
+        i32_t subnet = pid % 256;
+
         // procedure: create host and container interface
         //----------------------------------------------------------------------
-        execute("ip link add %s type veth peer name %s",
-                        network->interface_host,
-                        network->interface_container);
+        execute("ip link add veth-%d type veth peer name veth0", pid);
+
+        // procedure: set ip address of host interface
+        //----------------------------------------------------------------------
+        execute("ip addr add 10.0.%d.1/24 dev veth-%d", subnet, pid);
 
         // procedure: enable host interface
         //----------------------------------------------------------------------
-        execute("ip link set %s up", network->interface_host);
-
-        // procedure: attach host interface to bridge
-        //----------------------------------------------------------------------
-        execute("ip link set %s master br0", network->interface_host);
+        execute("ip link set veth-%d up", pid);
 
         // procedure: attach namespace to container process
         //----------------------------------------------------------------------
-        execute("ip netns attach netns0 %d", pid);
+        execute("ip netns attach netns-%d %d", pid, pid);
 
         // procedure: attach container interface to container namespace
         //----------------------------------------------------------------------
-        execute("ip link set %s netns netns0", network->interface_container);
+        execute("ip link set veth0 netns netns-%d", pid);
 
         // procedure: set ip address of container interface
         //----------------------------------------------------------------------
-        execute("ip netns exec netns0 ip addr add %s/24 dev %s",
-                        network->address,
-                        network->interface_container);
+        execute("ip netns exec netns-%d ip addr add 10.0.%d.2/24 dev veth0",
+                        pid, subnet);
 
         // procedure: enable container interfaces
         //----------------------------------------------------------------------
-        execute("ip netns exec netns0 ip link set lo up");
-        execute("ip netns exec netns0 ip link set %s up",
-                        network->interface_container);
+        execute("ip netns exec netns-%d ip link set lo up", pid);
+        execute("ip netns exec netns-%d ip link set veth0 up", pid);
 
         // procedure: add default route via the gateway
         //----------------------------------------------------------------------
-        execute("ip netns exec netns0 ip route add default via %s",
-                        network->gateway);
+        execute("ip netns exec netns-%d ip route add default via 10.0.%d.1",
+                        pid, subnet);
+
+        // procedure: configure nft
+        //----------------------------------------------------------------------
+        execute("echo 1 > /proc/sys/net/ipv4/ip_forward");
+
+        execute("nft add table inet nat");
+        execute("nft add chain inet nat postrouting '{ type nat hook postrouting priority 100 ; }'");
+        execute("nft add rule inet nat postrouting oifname %s masquerade",
+                        network->masquerade);
+}
+
+// function: network_deconfigure
+//------------------------------------------------------------------------------
+void_t network_deconfigure(network_t *network, i32_t pid)
+{
+        if (!network->masquerade)
+        {
+                return;
+        }
+
+        // procedure: destroy host and container interface
+        //----------------------------------------------------------------------
+        execute("ip link delete veth-%d", pid);
+
+        // procedure: destroy namespace
+        //----------------------------------------------------------------------
+        execute("ip netns delete netns-%d", pid);
 }

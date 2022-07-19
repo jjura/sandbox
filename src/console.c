@@ -35,8 +35,8 @@ static configuration_t configuration[] =
 {
         { OPTION_ID_BINDING,    "--binding",    true },
         { OPTION_ID_COMMAND,    "--command",    true },
-        { OPTION_ID_NETWORK,    "--network",    true },
         { OPTION_ID_DIRECTORY,  "--directory",  true },
+        { OPTION_ID_MASQUERADE, "--masquerade", true },
 };
 
 // function: find_configuration

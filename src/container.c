@@ -133,10 +133,6 @@ void_t container_create(container_t *container)
 //------------------------------------------------------------------------------
 void_t container_destroy(container_t *container)
 {
-        // procedure: destroy network
-        //----------------------------------------------------------------------
-        network_destroy(&container->network);
-
         // procedure: destroy binding
         //----------------------------------------------------------------------
         binding_destroy(&container->binding);
@@ -173,13 +169,11 @@ void_t container_set_binding(container_t *container,
         binding_set(&container->binding, source, target);
 }
 
-// function: container_set_network
+// function: container_set_masquerade
 //------------------------------------------------------------------------------
-void_t container_set_network(container_t *container,
-                char_t *address,
-                char_t *gateway)
+void_t container_set_masquerade(container_t *container, char_t *masquerade)
 {
-        network_set_address(&container->network, address, gateway);
+        network_set_masquerade(&container->network, masquerade);
 }
 
 // function: container_execute
@@ -207,7 +201,6 @@ void_t container_execute(container_t *container)
                         CLONE_NEWPID    |
                         CLONE_NEWUTS    |
                         CLONE_NEWCGROUP |
-                        //CLONE_NEWIPC    |
                         SIGCHLD,
                         container);
 
@@ -223,6 +216,10 @@ void_t container_execute(container_t *container)
         // procedure: wait for container
         //----------------------------------------------------------------------
         waitpid(container->pid, NULL, 0);
+
+        // procedure: deconfigure network
+        //----------------------------------------------------------------------
+        network_deconfigure(&container->network, container->pid);
 
         // procedure: unmount binding
         //----------------------------------------------------------------------

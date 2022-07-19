@@ -64,11 +64,9 @@ void_t container_set_binding(container_t *container,
                 path_t source,
                 path_t target);
 
-// function: container_set_network
+// function: container_set_masquerade
 //------------------------------------------------------------------------------
-void_t container_set_network(container_t *container,
-                char_t *address,
-                char_t *gateway);
+void_t container_set_masquerade(container_t *container, char_t *masquerade);
 
 // function: container_execute
 //------------------------------------------------------------------------------

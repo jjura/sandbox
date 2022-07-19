@@ -10,8 +10,8 @@
 typedef enum {
         OPTION_ID_BINDING,
         OPTION_ID_COMMAND,
-        OPTION_ID_NETWORK,
         OPTION_ID_DIRECTORY,
+        OPTION_ID_MASQUERADE,
 } option_id_t;
 
 // type: option_t

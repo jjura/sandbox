@@ -8,21 +8,8 @@
 // type: network_t
 //------------------------------------------------------------------------------
 typedef struct {
-        // member: address
-        //----------------------------------------------------------------------
-        char_t *address;
-
-        // member: gateway
-        //----------------------------------------------------------------------
-        char_t *gateway;
-
-        // member: interface_host
-        //----------------------------------------------------------------------
-        char_t *interface_host;
-
-        // member: interface_container
-        //----------------------------------------------------------------------
-        char_t *interface_container;
+        // member: masquerade
+        char_t *masquerade;
 
 } network_t;
 
@@ -30,18 +17,16 @@ typedef struct {
 //------------------------------------------------------------------------------
 void_t network_create(network_t *network);
 
-// function: network_destroy
-//------------------------------------------------------------------------------
-void_t network_destroy(network_t *network);
-
-// function: network_set_address
-//------------------------------------------------------------------------------
-void_t network_set_address(network_t *network,
-                char_t *address,
-                char_t *gateway);
-
 // function: network_configure
 //------------------------------------------------------------------------------
 void_t network_configure(network_t *network, i32_t pid);
+
+// function: network_deconfigure
+//------------------------------------------------------------------------------
+void_t network_deconfigure(network_t *network, i32_t pid);
+
+// function: network_set_masquerade
+//------------------------------------------------------------------------------
+void_t network_set_masquerade(network_t *network, char_t *masquerade);
 
 #endif
