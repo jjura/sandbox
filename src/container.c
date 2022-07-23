@@ -127,6 +127,16 @@ void_t container_create(container_t *container)
         // procedure: create network
         //----------------------------------------------------------------------
         network_create(&container->network);
+
+        // procedure: configure filesystem
+        //----------------------------------------------------------------------
+        filesystem_set(&container->filesystem, "/dev/pts", "devpts",   NULL);
+        filesystem_set(&container->filesystem, "/proc",    "proc",     NULL);
+        filesystem_set(&container->filesystem, "/sys",     "sysfs",    NULL);
+
+        // procedure: configure binding
+        //----------------------------------------------------------------------
+        binding_set(&container->binding, ttyname(STDOUT_FILENO), "/dev/console");
 }
 
 // function: container_destroy
@@ -180,17 +190,6 @@ void_t container_set_masquerade(container_t *container, char_t *masquerade)
 //------------------------------------------------------------------------------
 void_t container_execute(container_t *container)
 {
-        // procedure: configure binding
-        //----------------------------------------------------------------------
-        binding_set(&container->binding, ttyname(STDOUT_FILENO), "/dev/console");
-
-        // procedure: configure filesystem
-        //----------------------------------------------------------------------
-        filesystem_set(&container->filesystem, "/proc", "proc", NULL);
-        filesystem_set(&container->filesystem, "/sys", "sysfs", NULL);
-        filesystem_set(&container->filesystem, "/dev", "devtmpfs", NULL);
-        filesystem_set(&container->filesystem, "/dev/pts", "devpts", NULL);
-
         // procedure: create container process
         //----------------------------------------------------------------------
         container->pid = clone(
