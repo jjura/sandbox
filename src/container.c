@@ -29,7 +29,7 @@
 //------------------------------------------------------------------------------
 static void_t container_process_execute(container_t *container)
 {
-        if (execl(DEFAULT_SHELL, DEFAULT_SHELL, "-c", container->command))
+        if (execl(DEFAULT_SHELL, DEFAULT_SHELL, "-c", container->command, NULL))
         {
                 LOG_ERROR("Failed exec: %s.", strerror(errno));
         }
@@ -71,18 +71,8 @@ static void_t container_process_set_directory(container_t *container)
 
 // function: container_process
 //------------------------------------------------------------------------------
-static i32_t container_process(void_t *argument)
+static i32_t container_process(void_t *container)
 {
-        container_t *container = argument;
-
-        // procedure: mount filesystem
-        //----------------------------------------------------------------------
-        filesystem_mount(&container->filesystem, container->directory);
-
-        // procedure: mount binding
-        //----------------------------------------------------------------------
-        binding_mount(&container->binding, container->directory);
-
         // procedure: change directory
         //----------------------------------------------------------------------
         container_process_set_directory(container);
@@ -207,6 +197,14 @@ void_t container_execute(container_t *container)
         {
                 LOG_ERROR("Failed clone: %s", strerror(errno));
         }
+
+        // procedure: mount filesystem
+        //----------------------------------------------------------------------
+        filesystem_mount(&container->filesystem, container->directory);
+
+        // procedure: mount binding
+        //----------------------------------------------------------------------
+        binding_mount(&container->binding, container->directory);
 
         // procedure: configure network
         //----------------------------------------------------------------------
