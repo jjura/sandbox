@@ -1,6 +1,7 @@
 // includes: project
 //------------------------------------------------------------------------------
 #include "log.h"
+#include "directory.h"
 #include "filesystem.h"
 
 // includes: c
@@ -59,7 +60,13 @@ void_t filesystem_mount(filesystem_t *filesystem, path_t directory)
         for (i32_t i = 0; i < filesystem->offset; ++i)
         {
                 filesystem_entry_t *entry = filesystem->entry + i;
+
                 sprintf(path, "%s/%s", directory, entry->target);
+
+                if (!directory_exists(path))
+                {
+                        directory_create(path);
+                }
 
                 if (mount(entry->type, path, entry->type, 0, entry->data))
                 {

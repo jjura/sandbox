@@ -58,6 +58,7 @@ void_t binding_mount(binding_t *binding, path_t directory)
         for (i32_t i = 0; i < binding->offset; ++i)
         {
                 binding_entry_t *entry = binding->entry + i;
+
                 sprintf(path, "%s/%s", directory, entry->target);
 
                 if (directory_exists(entry->source) && !directory_exists(path))

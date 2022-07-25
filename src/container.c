@@ -39,14 +39,16 @@ static void_t container_process_execute(container_t *container)
 //------------------------------------------------------------------------------
 static void_t container_process_set_hostname(path_t file)
 {
-        if (file_exists(file))
+        if (!file_exists(file))
         {
-                i32_t size = file_size(file);
-                char_t hostname[size];
-
-                file_read(file, hostname, size);
-                sethostname(hostname, size);
+                return;
         }
+
+        i32_t size = file_size(file);
+        char_t hostname[size];
+
+        file_read(file, hostname, size);
+        sethostname(hostname, size);
 }
 
 // function: container_process_set_root

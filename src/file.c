@@ -15,29 +15,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-// function: file_exists
-//------------------------------------------------------------------------------
-bool_t file_exists(path_t path)
-{
-        struct stat info;
-
-        return (!stat(path, &info) && !S_ISDIR(info.st_mode));
-}
-
-// function: file_size
-//------------------------------------------------------------------------------
-i32_t file_size(path_t path)
-{
-        struct stat info;
-
-        if (stat(path, &info))
-        {
-                LOG_ERROR("Failed file size: %s", strerror(errno));
-        }
-
-        return info.st_size;
-}
-
 // function: file_create
 //------------------------------------------------------------------------------
 void_t file_create(path_t path)
@@ -64,4 +41,27 @@ void_t file_read(path_t path, char_t *buffer, i32_t size)
         }
 
         buffer[size - 1] = '\0';
+}
+
+// function: file_exists
+//------------------------------------------------------------------------------
+bool_t file_exists(path_t path)
+{
+        struct stat info;
+
+        return (!stat(path, &info) && !S_ISDIR(info.st_mode));
+}
+
+// function: file_size
+//------------------------------------------------------------------------------
+i32_t file_size(path_t path)
+{
+        struct stat info;
+
+        if (stat(path, &info))
+        {
+                LOG_ERROR("Failed file size: %s", strerror(errno));
+        }
+
+        return info.st_size;
 }
