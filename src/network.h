@@ -29,4 +29,8 @@ void_t network_deconfigure(network_t *network, i32_t pid);
 //------------------------------------------------------------------------------
 void_t network_set_masquerade(network_t *network, char_t *masquerade);
 
+// function: network_get_masquerade
+//------------------------------------------------------------------------------
+char_t *network_get_masquerade(network_t *network);
+
 #endif

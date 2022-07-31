@@ -182,17 +182,26 @@ void_t container_set_masquerade(container_t *container, char_t *masquerade)
 //------------------------------------------------------------------------------
 void_t container_execute(container_t *container)
 {
+        // procedure: prepare list of namespaces
+        //----------------------------------------------------------------------
+        i32_t container_namespaces =
+                CLONE_NEWNS     |
+                CLONE_NEWPID    |
+                CLONE_NEWUTS    |
+                CLONE_NEWCGROUP |
+                SIGCHLD;
+
+        if (network_get_masquerade(&container->network) != NULL)
+        {
+                container_namespaces |= CLONE_NEWNET;
+        }
+
         // procedure: create container process
         //----------------------------------------------------------------------
         container->pid = clone(
                         container_process,
                         memory_head(&container->memory),
-                        CLONE_NEWNS     |
-                        CLONE_NEWNET    |
-                        CLONE_NEWPID    |
-                        CLONE_NEWUTS    |
-                        CLONE_NEWCGROUP |
-                        SIGCHLD,
+                        container_namespaces,
                         container);
 
         if (container->pid == -1)

@@ -38,13 +38,6 @@ void_t network_create(network_t *network)
         network->masquerade = NULL;
 }
 
-// function: network_set_masquerade
-//------------------------------------------------------------------------------
-void_t network_set_masquerade(network_t *network, char_t *masquerade)
-{
-        network->masquerade = masquerade;
-}
-
 // function: network_configure
 //------------------------------------------------------------------------------
 void_t network_configure(network_t *network, i32_t pid)
@@ -120,4 +113,18 @@ void_t network_deconfigure(network_t *network, i32_t pid)
         // procedure: destroy namespace
         //----------------------------------------------------------------------
         execute("ip netns delete netns-%d", pid);
+}
+
+// function: network_set_masquerade
+//------------------------------------------------------------------------------
+void_t network_set_masquerade(network_t *network, char_t *masquerade)
+{
+        network->masquerade = masquerade;
+}
+
+// function: network_get_masquerade
+//------------------------------------------------------------------------------
+char_t *network_get_masquerade(network_t *network)
+{
+        return network->masquerade;
 }
