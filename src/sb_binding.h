@@ -1,64 +1,61 @@
-#ifndef FILESYSTEM_H
-#define FILESYSTEM_H
+#ifndef SB_BINDING_H
+#define SB_BINDING_H
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "type.h"
+#include "sb_type.h"
 
-// type: filesystem_entry_t
+// type: sb_binding_entry_t
 //------------------------------------------------------------------------------
 typedef struct {
+        // member: source
+        //----------------------------------------------------------------------
+        sb_path_t source;
+
         // member: target
         //----------------------------------------------------------------------
-        path_t target;
+        sb_path_t target;
 
-        // member: type
-        //----------------------------------------------------------------------
-        char_t *type;
+} sb_binding_entry_t;
 
-        // member: data
-        //----------------------------------------------------------------------
-        char_t *data;
-
-} filesystem_entry_t;
-
-// type: filesystem_t
+// type: binding
 //------------------------------------------------------------------------------
 typedef struct {
         // member: offset
         //----------------------------------------------------------------------
-        i32_t offset;
+        sb_i32_t offset;
 
         // member: offset_max
         //----------------------------------------------------------------------
-        i32_t offset_max;
+        sb_i32_t offset_max;
 
         // member: entry
         //----------------------------------------------------------------------
-        filesystem_entry_t *entry;
+        sb_binding_entry_t *entry;
 
-} filesystem_t;
+} sb_binding_t;
 
-// function: filesystem_create
+// function: sb_binding_create
 //------------------------------------------------------------------------------
-void_t filesystem_create(filesystem_t *filesystem);
+sb_void_t sb_binding_create(sb_binding_t *binding);
 
-// function: filesystem_destroy
+// function: sb_binding_destroy
 //------------------------------------------------------------------------------
-void_t filesystem_destroy(filesystem_t *filesystem);
+sb_void_t sb_binding_destroy(sb_binding_t *binding);
 
-// function: filesystem_set
+// function: sb_binding_set
 //------------------------------------------------------------------------------
-void_t filesystem_set(filesystem_t *filesystem, path_t target,
-                char_t *type,
-                char_t *data);
+sb_void_t sb_binding_set(
+                sb_binding_t *binding,
+                sb_path_t source,
+                sb_path_t target);
 
-// function: filesystem_mount
+// function: sb_binding_mount
 //------------------------------------------------------------------------------
-void_t filesystem_mount(filesystem_t *filesystem, path_t directory);
+sb_void_t sb_binding_mount(sb_binding_t *binding, sb_path_t directory);
 
-// function: filesystem_unmount
+// function: sb_binding_unmount
 //------------------------------------------------------------------------------
-void_t filesystem_unmount(filesystem_t *filesystem, path_t directory);
+sb_void_t sb_binding_unmount(sb_binding_t *binding, sb_path_t directory);
 
 #endif

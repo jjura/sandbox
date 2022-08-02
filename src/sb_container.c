@@ -2,10 +2,10 @@
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "log.h"
-#include "file.h"
-#include "directory.h"
-#include "container.h"
+#include "sb_log.h"
+#include "sb_file.h"
+#include "sb_directory.h"
+#include "sb_container.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -25,78 +25,78 @@
 #define DEFAULT_SHELL           "/bin/sh"
 #define DEFAULT_COMMAND         DEFAULT_SHELL
 
-// function: container_process_execute
+// function: sb_container_process_execute
 //------------------------------------------------------------------------------
-static void_t container_process_execute(container_t *container)
+static sb_void_t sb_container_process_execute(sb_container_t *container)
 {
         if (execl(DEFAULT_SHELL, DEFAULT_SHELL, "-c", container->command, NULL))
         {
-                LOG_ERROR("Failed exec: %s.", strerror(errno));
+                SB_LOG_ERROR("Failed exec: %s.", strerror(errno));
         }
 }
 
-// function: container_process_set_hostname
+// function: sb_container_process_set_hostname
 //------------------------------------------------------------------------------
-static void_t container_process_set_hostname(path_t file)
+static sb_void_t sb_container_process_set_hostname(sb_path_t file)
 {
-        if (!file_exists(file))
+        if (!sb_file_exists(file))
         {
                 return;
         }
 
-        i32_t size = file_size(file);
-        char_t hostname[size];
+        sb_i32_t size = sb_file_size(file);
+        sb_char_t hostname[size];
 
-        file_read(file, hostname, size);
+        sb_file_read(file, hostname, size);
         sethostname(hostname, size);
 }
 
-// function: container_process_set_root
+// function: sb_container_process_set_root
 //------------------------------------------------------------------------------
-static void_t container_process_set_root(container_t *container)
+static sb_void_t sb_container_process_set_root(sb_container_t *container)
 {
         if (chroot(container->directory))
         {
-                LOG_ERROR("Failed chroot: %s.", strerror(errno));
+                SB_LOG_ERROR("Failed chroot: %s.", strerror(errno));
         }
 }
 
-// function: container_process_set_directory
+// function: sb_container_process_set_directory
 //------------------------------------------------------------------------------
-static void_t container_process_set_directory(container_t *container)
+static sb_void_t sb_container_process_set_directory(sb_container_t *container)
 {
         if (chdir(container->directory))
         {
-                LOG_ERROR("Failed chdir: %s.", strerror(errno));
+                SB_LOG_ERROR("Failed chdir: %s.", strerror(errno));
         }
 }
 
-// function: container_process
+// function: sb_container_process
 //------------------------------------------------------------------------------
-static i32_t container_process(void_t *container)
+static sb_i32_t sb_container_process(sb_void_t *container)
 {
         // procedure: change directory
         //----------------------------------------------------------------------
-        container_process_set_directory(container);
+        sb_container_process_set_directory(container);
 
         // procedure: change root
         //----------------------------------------------------------------------
-        container_process_set_root(container);
+        sb_container_process_set_root(container);
 
         // procedure: change hostname
         //----------------------------------------------------------------------
-        container_process_set_hostname(DEFAULT_HOSTNAME_FILE);
+        sb_container_process_set_hostname(DEFAULT_HOSTNAME_FILE);
 
         // procedure: execute command
         //----------------------------------------------------------------------
-        container_process_execute(container);
+        sb_container_process_execute(container);
 
         return 0;
 }
 
-// function: container_create
+// function: sb_container_create
 //------------------------------------------------------------------------------
-void_t container_create(container_t *container)
+sb_void_t sb_container_create(sb_container_t *container)
 {
         // procedure: initialize container
         //----------------------------------------------------------------------
@@ -106,120 +106,124 @@ void_t container_create(container_t *container)
 
         // procedure: create memory
         //----------------------------------------------------------------------
-        memory_create(&container->memory);
+        sb_memory_tcreate(&container->memory);
 
         // procedure: create filesystem
         //----------------------------------------------------------------------
-        filesystem_create(&container->filesystem);
+        sb_filesystem_create(&container->filesystem);
 
         // procedure: create binding
         //----------------------------------------------------------------------
-        binding_create(&container->binding);
+        sb_binding_create(&container->binding);
 
         // procedure: create network
         //----------------------------------------------------------------------
-        network_create(&container->network);
+        sb_network_create(&container->network);
 
         // procedure: configure filesystem
         //----------------------------------------------------------------------
-        filesystem_set(&container->filesystem, "/dev/pts", "devpts",   NULL);
-        filesystem_set(&container->filesystem, "/proc",    "proc",     NULL);
-        filesystem_set(&container->filesystem, "/sys",     "sysfs",    NULL);
+        sb_filesystem_set(&container->filesystem, "/dev/pts", "devpts",   NULL);
+        sb_filesystem_set(&container->filesystem, "/proc",    "proc",     NULL);
+        sb_filesystem_set(&container->filesystem, "/sys",     "sysfs",    NULL);
 
         // procedure: configure binding
         //----------------------------------------------------------------------
-        binding_set(&container->binding, ttyname(STDOUT_FILENO), "/dev/console");
+        sb_binding_set(&container->binding, ttyname(STDOUT_FILENO), "/dev/console");
 }
 
-// function: container_destroy
+// function: sb_container_destroy
 //------------------------------------------------------------------------------
-void_t container_destroy(container_t *container)
+sb_void_t sb_container_destroy(sb_container_t *container)
 {
         // procedure: destroy binding
         //----------------------------------------------------------------------
-        binding_destroy(&container->binding);
+        sb_binding_destroy(&container->binding);
 
         // procedure: destroy filesystem
         //----------------------------------------------------------------------
-        filesystem_destroy(&container->filesystem);
+        sb_filesystem_destroy(&container->filesystem);
 
         // procedure: destroy memory
         //----------------------------------------------------------------------
-        memory_destroy(&container->memory);
+        sb_memory_tdestroy(&container->memory);
 }
 
-// function: container_set_directory
+// function: sb_container_set_directory
 //------------------------------------------------------------------------------
-void_t container_set_directory(container_t *container, path_t directory)
+sb_void_t sb_container_set_directory(
+                sb_container_t *container,
+                sb_path_t directory)
 {
         container->directory = directory;
 }
 
-// function: container_set_command
+// function: sb_container_set_command
 //------------------------------------------------------------------------------
-void_t container_set_command(container_t *container, path_t command)
+sb_void_t sb_container_set_command(sb_container_t *container, sb_path_t command)
 {
         container->command = command;
 }
 
-// function: container_set_binding
+// function: sb_container_set_binding
 //------------------------------------------------------------------------------
-void_t container_set_binding(container_t *container,
-                path_t source,
-                path_t target)
+sb_void_t sb_container_set_binding(sb_container_t *container,
+                sb_path_t source,
+                sb_path_t target)
 {
-        binding_set(&container->binding, source, target);
+        sb_binding_set(&container->binding, source, target);
 }
 
-// function: container_set_masquerade
+// function: sb_container_set_masquerade
 //------------------------------------------------------------------------------
-void_t container_set_masquerade(container_t *container, char_t *masquerade)
+sb_void_t sb_container_set_masquerade(
+                sb_container_t *container,
+                sb_char_t *masquerade)
 {
-        network_set_masquerade(&container->network, masquerade);
+        sb_network_set_masquerade(&container->network, masquerade);
 }
 
-// function: container_execute
+// function: sb_container_execute
 //------------------------------------------------------------------------------
-void_t container_execute(container_t *container)
+sb_void_t sb_container_execute(sb_container_t *container)
 {
         // procedure: prepare list of namespaces
         //----------------------------------------------------------------------
-        i32_t container_namespaces =
+        sb_i32_t sb_container_namespaces =
                 CLONE_NEWNS     |
                 CLONE_NEWPID    |
                 CLONE_NEWUTS    |
                 CLONE_NEWCGROUP |
                 SIGCHLD;
 
-        if (network_get_masquerade(&container->network) != NULL)
+        if (sb_network_get_masquerade(&container->network) != NULL)
         {
-                container_namespaces |= CLONE_NEWNET;
+                sb_container_namespaces |= CLONE_NEWNET;
         }
 
         // procedure: create container process
         //----------------------------------------------------------------------
         container->pid = clone(
-                        container_process,
-                        memory_head(&container->memory),
-                        container_namespaces,
+                        sb_container_process,
+                        sb_memory_thead(&container->memory),
+                        sb_container_namespaces,
                         container);
 
         if (container->pid == -1)
         {
-                LOG_ERROR("Failed clone: %s", strerror(errno));
+                SB_LOG_ERROR("Failed clone: %s", strerror(errno));
         }
 
         // procedure: mount filesystem
         //----------------------------------------------------------------------
-        filesystem_mount(&container->filesystem, container->directory);
+        sb_filesystem_mount(&container->filesystem, container->directory);
 
         // procedure: mount binding
         //----------------------------------------------------------------------
-        binding_mount(&container->binding, container->directory);
+        sb_binding_mount(&container->binding, container->directory);
 
         // procedure: configure network
         //----------------------------------------------------------------------
-        network_configure(&container->network, container->pid);
+        sb_network_configure(&container->network, container->pid);
 
         // procedure: wait for container
         //----------------------------------------------------------------------
@@ -227,13 +231,13 @@ void_t container_execute(container_t *container)
 
         // procedure: deconfigure network
         //----------------------------------------------------------------------
-        network_deconfigure(&container->network, container->pid);
+        sb_network_deconfigure(&container->network, container->pid);
 
         // procedure: unmount binding
         //----------------------------------------------------------------------
-        binding_unmount(&container->binding, container->directory);
+        sb_binding_unmount(&container->binding, container->directory);
 
         // procedure: unmount filesystem
         //----------------------------------------------------------------------
-        filesystem_unmount(&container->filesystem, container->directory);
+        sb_filesystem_unmount(&container->filesystem, container->directory);
 }

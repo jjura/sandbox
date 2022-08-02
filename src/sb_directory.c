@@ -1,7 +1,7 @@
 // includes: project
 //------------------------------------------------------------------------------
-#include "log.h"
-#include "directory.h"
+#include "sb_log.h"
+#include "sb_directory.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -12,23 +12,23 @@
 //------------------------------------------------------------------------------
 #include <sys/stat.h>
 
-// function: directory_exists
+// function: sb_directory_exists
 //------------------------------------------------------------------------------
-bool_t directory_exists(path_t directory)
+sb_bool_t sb_directory_exists(sb_path_t directory)
 {
         struct stat info;
 
         return (!stat(directory, &info) && S_ISDIR(info.st_mode));
 }
 
-// function: directory_create
+// function: sb_directory_create
 //------------------------------------------------------------------------------
-void_t directory_create(path_t directory)
+sb_void_t sb_directory_create(sb_path_t directory)
 {
         struct stat info;
 
         if (stat(directory, &info) == -1 && mkdir(directory, 0755))
         {
-                LOG_ERROR("Failed directory create: %s", strerror(errno));
+                SB_LOG_ERROR("Failed directory create: %s", strerror(errno));
         }
 }

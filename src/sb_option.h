@@ -1,42 +1,45 @@
-#ifndef OPTION_H
-#define OPTION_H
+#ifndef SB_OPTION_H
+#define SB_OPTION_H
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "type.h"
+#include "sb_type.h"
 
-// type: option_id_t
+// type: sb_option_id_t
 //------------------------------------------------------------------------------
 typedef enum {
         OPTION_ID_BINDING,
         OPTION_ID_COMMAND,
         OPTION_ID_DIRECTORY,
         OPTION_ID_MASQUERADE,
-} option_id_t;
+} sb_option_id_t;
 
-// type: option_t
+// type: sb_option_t
 //------------------------------------------------------------------------------
 typedef struct {
         // member: id
         //----------------------------------------------------------------------
-        option_id_t id;
+        sb_option_id_t id;
 
         // member: value
         //----------------------------------------------------------------------
-        char_t *value;
+        sb_char_t *value;
 
-} option_t;
+} sb_option_t;
 
-// function: option_create
+// function: sb_option_create
 //------------------------------------------------------------------------------
-void_t option_create(option_t *option, option_id_t id, char_t *value);
+sb_void_t sb_option_create(
+                sb_option_t *option,
+                sb_option_id_t id,
+                sb_char_t *value);
 
-// function: option_get_id
+// function: sb_option_get_id
 //------------------------------------------------------------------------------
-option_id_t option_get_id(option_t *option);
+sb_option_id_t sb_option_get_id(sb_option_t *option);
 
-// function: option_get_value
+// function: sb_option_get_value
 //------------------------------------------------------------------------------
-char_t *option_get_value(option_t *option);
+sb_char_t *sb_option_get_value(sb_option_t *option);
 
 #endif

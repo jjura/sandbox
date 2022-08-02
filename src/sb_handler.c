@@ -1,6 +1,6 @@
 // includes: project
 //------------------------------------------------------------------------------
-#include "handler.h"
+#include "sb_handler.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -10,18 +10,20 @@
 //------------------------------------------------------------------------------
 #define ARGUMENT_SEPARATOR ':'
 
-// type: handler_function_t
+// type: sb_handler_function_t
 //------------------------------------------------------------------------------
-typedef void_t (*handler_function_t)(handler_t *handler, option_t *option);
+typedef sb_void_t (*sb_handler_function_t)(
+                sb_handler_t *handler,
+                sb_option_t *option);
 
 // function: handle_binding
 //------------------------------------------------------------------------------
-static void_t handle_binding(handler_t *handler, option_t *option)
+static sb_void_t handle_binding(sb_handler_t *handler, sb_option_t *option)
 {
-        char_t *source = option_get_value(option);
-        char_t *target = source;
+        sb_char_t *source = sb_option_get_value(option);
+        sb_char_t *target = source;
 
-        for (char_t *separator = source; *separator; ++separator)
+        for (sb_char_t *separator = source; *separator; ++separator)
         {
                 if (*separator == ARGUMENT_SEPARATOR)
                 {
@@ -30,33 +32,39 @@ static void_t handle_binding(handler_t *handler, option_t *option)
                 }
         }
 
-        container_set_binding(handler->container, source, target);
+        sb_container_set_binding(handler->container, source, target);
 }
 
 // function: handle_command
 //------------------------------------------------------------------------------
-static void_t handle_command(handler_t *handler, option_t *option)
+static sb_void_t handle_command(sb_handler_t *handler, sb_option_t *option)
 {
-        container_set_command(handler->container, option_get_value(option));
+        sb_char_t *value = sb_option_get_value(option);
+
+        sb_container_set_command(handler->container, value);
 }
 
 // function: handle_directory
 //------------------------------------------------------------------------------
-static void_t handle_directory(handler_t *handler, option_t *option)
+static sb_void_t handle_directory(sb_handler_t *handler, sb_option_t *option)
 {
-        container_set_directory(handler->container, option_get_value(option));
+        sb_char_t *value = sb_option_get_value(option);
+
+        sb_container_set_directory(handler->container, value);
 }
 
 // function: handle_masquerade
 //------------------------------------------------------------------------------
-static void_t handle_masquerade(handler_t *handler, option_t *option)
+static sb_void_t handle_masquerade(sb_handler_t *handler, sb_option_t *option)
 {
-        container_set_masquerade(handler->container, option_get_value(option));
+        sb_char_t *value = sb_option_get_value(option);
+
+        sb_container_set_masquerade(handler->container, value);
 }
 
 // variable: handlers
 //------------------------------------------------------------------------------
-static handler_function_t handlers[] =
+static sb_handler_function_t handlers[] =
 {
         [ OPTION_ID_BINDING ]    = handle_binding,
         [ OPTION_ID_COMMAND ]    = handle_command,
@@ -64,18 +72,18 @@ static handler_function_t handlers[] =
         [ OPTION_ID_MASQUERADE ] = handle_masquerade,
 };
 
-// function: handler_create
+// function: sb_handler_create
 //------------------------------------------------------------------------------
-void_t handler_create(handler_t *handler, container_t *container)
+sb_void_t sb_handler_create(sb_handler_t *handler, sb_container_t *container)
 {
         handler->container = container;
 }
 
-// function: handler_execute
+// function: sb_handler_execute
 //------------------------------------------------------------------------------
-void_t handler_execute(handler_t *handler, option_t *option)
+sb_void_t sb_handler_execute(sb_handler_t *handler, sb_option_t *option)
 {
-        option_id_t id = option_get_id(option);
+        sb_option_id_t id = sb_option_get_id(option);
 
         handlers[id](handler, option);
 }

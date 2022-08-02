@@ -2,8 +2,8 @@
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "log.h"
-#include "network.h"
+#include "sb_log.h"
+#include "sb_network.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -18,9 +18,9 @@
 
 // function: execute
 //------------------------------------------------------------------------------
-static inline void_t execute(char_t *format, ...)
+static inline sb_void_t execute(sb_char_t *format, ...)
 {
-        char_t *command;
+        sb_char_t *command;
 
         va_list list;
         va_start(list, format);
@@ -31,16 +31,16 @@ static inline void_t execute(char_t *format, ...)
         free(command);
 }
 
-// function: network_create
+// function: sb_network_create
 //------------------------------------------------------------------------------
-void_t network_create(network_t *network)
+sb_void_t sb_network_create(sb_network_t *network)
 {
         network->masquerade = NULL;
 }
 
-// function: network_configure
+// function: sb_network_configure
 //------------------------------------------------------------------------------
-void_t network_configure(network_t *network, i32_t pid)
+sb_void_t sb_network_configure(sb_network_t *network, sb_i32_t pid)
 {
         if (!network->masquerade)
         {
@@ -50,7 +50,7 @@ void_t network_configure(network_t *network, i32_t pid)
         // procedure: chose subnet
         //----------------------------------------------------------------------
         // TODO: come up with way to generate unique subnet
-        i32_t subnet = pid % 256;
+        sb_i32_t subnet = pid % 256;
 
         // procedure: create host and container interface
         //----------------------------------------------------------------------
@@ -92,14 +92,15 @@ void_t network_configure(network_t *network, i32_t pid)
         execute("echo 1 > /proc/sys/net/ipv4/ip_forward");
 
         execute("nft add table inet nat");
-        execute("nft add chain inet nat postrouting '{ type nat hook postrouting priority 100 ; }'");
+        execute("nft add chain inet nat postrouting"
+                "'{ type nat hook postrouting priority 100 ; }'");
         execute("nft add rule inet nat postrouting oifname %s masquerade",
                         network->masquerade);
 }
 
-// function: network_deconfigure
+// function: sb_network_deconfigure
 //------------------------------------------------------------------------------
-void_t network_deconfigure(network_t *network, i32_t pid)
+sb_void_t sb_network_deconfigure(sb_network_t *network, sb_i32_t pid)
 {
         if (!network->masquerade)
         {
@@ -115,16 +116,16 @@ void_t network_deconfigure(network_t *network, i32_t pid)
         execute("ip netns delete netns-%d", pid);
 }
 
-// function: network_set_masquerade
+// function: sb_network_set_masquerade
 //------------------------------------------------------------------------------
-void_t network_set_masquerade(network_t *network, char_t *masquerade)
+sb_void_t sb_network_set_masquerade(sb_network_t *network, sb_char_t *masquerade)
 {
         network->masquerade = masquerade;
 }
 
-// function: network_get_masquerade
+// function: sb_network_get_masquerade
 //------------------------------------------------------------------------------
-char_t *network_get_masquerade(network_t *network)
+sb_char_t *sb_network_get_masquerade(sb_network_t *network)
 {
         return network->masquerade;
 }

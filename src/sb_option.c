@@ -1,25 +1,28 @@
 // includes: project
 //------------------------------------------------------------------------------
-#include "option.h"
+#include "sb_option.h"
 
-// function: option_create
+// function: sb_option_create
 //------------------------------------------------------------------------------
-void_t option_create(option_t *option, option_id_t id, char_t *value)
+sb_void_t sb_option_create(
+                sb_option_t *option,
+                sb_option_id_t id,
+                sb_char_t *value)
 {
         option->id = id;
         option->value = value;
 }
 
-// function: option_get_id
+// function: sb_option_get_id
 //------------------------------------------------------------------------------
-option_id_t option_get_id(option_t *option)
+sb_option_id_t sb_option_get_id(sb_option_t *option)
 {
         return option->id;
 }
 
-// function: option_get_value
+// function: sb_option_get_value
 //------------------------------------------------------------------------------
-char_t *option_get_value(option_t *option)
+sb_char_t *sb_option_get_value(sb_option_t *option)
 {
         return option->value;
 }

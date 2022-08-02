@@ -1,9 +1,9 @@
 // includes: project
 //------------------------------------------------------------------------------
-#include "log.h"
-#include "file.h"
-#include "binding.h"
-#include "directory.h"
+#include "sb_log.h"
+#include "sb_file.h"
+#include "sb_binding.h"
+#include "sb_directory.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -15,25 +15,28 @@
 #include <sys/mount.h>
 #include <linux/limits.h>
 
-// function: binding_create
+// function: sb_binding_create
 //------------------------------------------------------------------------------
-void_t binding_create(binding_t *binding)
+sb_void_t sb_binding_create(sb_binding_t *binding)
 {
         binding->offset         = 0;
         binding->offset_max     = 0;
         binding->entry          = NULL;
 }
 
-// function: binding_destroy
+// function: sb_binding_destroy
 //------------------------------------------------------------------------------
-void_t binding_destroy(binding_t *binding)
+sb_void_t sb_binding_destroy(sb_binding_t *binding)
 {
         free(binding->entry);
 }
 
-// function: binding_set
+// function: sb_binding_set
 //------------------------------------------------------------------------------
-void_t binding_set(binding_t *binding, path_t source, path_t target)
+sb_void_t sb_binding_set(
+                sb_binding_t *binding,
+                sb_path_t source,
+                sb_path_t target)
 {
         if (binding->offset == binding->offset_max)
         {
@@ -41,7 +44,7 @@ void_t binding_set(binding_t *binding, path_t source, path_t target)
                 binding->entry = realloc(
                                 binding->entry,
                                 binding->offset_max *
-                                sizeof(binding_entry_t));
+                                sizeof(sb_binding_entry_t));
         }
 
         binding->entry[binding->offset].source = source;
@@ -49,47 +52,49 @@ void_t binding_set(binding_t *binding, path_t source, path_t target)
         binding->offset++;
 }
 
-// function: binding_mount
+// function: sb_binding_mount
 //------------------------------------------------------------------------------
-void_t binding_mount(binding_t *binding, path_t directory)
+sb_void_t sb_binding_mount(sb_binding_t *binding, sb_path_t directory)
 {
-        char_t path[PATH_MAX];
+        sb_char_t path[PATH_MAX];
 
-        for (i32_t i = 0; i < binding->offset; ++i)
+        for (sb_i32_t i = 0; i < binding->offset; ++i)
         {
-                binding_entry_t *entry = binding->entry + i;
+                sb_binding_entry_t *entry = binding->entry + i;
 
                 sprintf(path, "%s/%s", directory, entry->target);
 
-                if (directory_exists(entry->source) && !directory_exists(path))
+                if (sb_directory_exists(entry->source))
                 {
-                        directory_create(path);
+                        sb_directory_create(path);
                 }
-                else if (file_exists(entry->source) && !file_exists(path))
+                else if (sb_file_exists(entry->source))
                 {
-                        file_create(path);
+                        sb_file_create(path);
                 }
 
                 if (mount(entry->source, path, NULL, MS_BIND, NULL))
                 {
-                        LOG_ERROR("Failed binding mount: %s", strerror(errno));
+                        SB_LOG_ERROR("Failed binding mount: %s",
+                                        strerror(errno));
                 }
         }
 }
 
-// function: binding_unmount
+// function: sb_binding_unmount
 //------------------------------------------------------------------------------
-void_t binding_unmount(binding_t *binding, path_t directory)
+sb_void_t sb_binding_unmount(sb_binding_t *binding, sb_path_t directory)
 {
-        char_t path[PATH_MAX];
+        sb_char_t path[PATH_MAX];
 
-        for (i32_t i = 0; i < binding->offset; ++i)
+        for (sb_i32_t i = 0; i < binding->offset; ++i)
         {
                 sprintf(path, "%s/%s", directory, binding->entry[i].target);
 
                 if (umount(path))
                 {
-                        LOG_ERROR("Failed binding umount: %s", strerror(errno));
+                        SB_LOG_ERROR("Failed binding umount: %s",
+                                        strerror(errno));
                 }
         }
 }

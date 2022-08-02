@@ -1,26 +1,26 @@
-#ifndef HANDLER_H
-#define HANDLER_H
+#ifndef SB_HANDLER_H
+#define SB_HANDLER_H
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "option.h"
-#include "container.h"
+#include "sb_option.h"
+#include "sb_container.h"
 
-// type: handler_t
+// type: sb_handler_t
 //------------------------------------------------------------------------------
 typedef struct {
         // member: container
         //----------------------------------------------------------------------
-        container_t *container;
+        sb_container_t *container;
 
-} handler_t;
+} sb_handler_t;
 
-// function: handler_create
+// function: sb_handler_create
 //------------------------------------------------------------------------------
-void_t handler_create(handler_t *handler, container_t *container);
+sb_void_t sb_handler_create(sb_handler_t *handler, sb_container_t *container);
 
-// function: handler_execute
+// function: sb_handler_execute
 //------------------------------------------------------------------------------
-void_t handler_execute(handler_t *handler, option_t *option);
+sb_void_t sb_handler_execute(sb_handler_t *handler, sb_option_t *option);
 
 #endif

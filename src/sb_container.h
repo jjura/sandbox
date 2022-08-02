@@ -1,75 +1,80 @@
-#ifndef CONTAINER_H
-#define CONTAINER_H
+#ifndef SB_CONTAINER_H
+#define SB_CONTAINER_H
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "type.h"
-#include "memory.h"
-#include "network.h"
-#include "binding.h"
-#include "filesystem.h"
+#include "sb_type.h"
+#include "sb_memory.h"
+#include "sb_network.h"
+#include "sb_binding.h"
+#include "sb_filesystem.h"
 
-// type: container_t
+// type: sb_container_t
 //------------------------------------------------------------------------------
 typedef struct {
         // member: pid
         //----------------------------------------------------------------------
-        i32_t pid;
+        sb_i32_t pid;
 
         // member: directory
         //----------------------------------------------------------------------
-        path_t directory;
+        sb_path_t directory;
 
         // member: command
         //----------------------------------------------------------------------
-        path_t command;
+        sb_path_t command;
 
         // member: network
         //----------------------------------------------------------------------
-        network_t network;
+        sb_network_t network;
 
         // member: binding
         //----------------------------------------------------------------------
-        binding_t binding;
+        sb_binding_t binding;
 
         // member: filesystem
         //----------------------------------------------------------------------
-        filesystem_t filesystem;
+        sb_filesystem_t filesystem;
 
         // member: memory
         //----------------------------------------------------------------------
-        memory_t memory;
+        sb_memory_tt memory;
 
-} container_t;
+} sb_container_t;
 
-// function: container_create
+// function: sb_container_create
 //------------------------------------------------------------------------------
-void_t container_create(container_t *container);
+sb_void_t sb_container_create(sb_container_t *container);
 
-// function: container_destroy
+// function: sb_container_destroy
 //------------------------------------------------------------------------------
-void_t container_destroy(container_t *container);
+sb_void_t sb_container_destroy(sb_container_t *container);
 
-// function: container_set_directory
+// function: sb_container_set_directory
 //------------------------------------------------------------------------------
-void_t container_set_directory(container_t *container, path_t directory);
+sb_void_t sb_container_set_directory(
+                sb_container_t *container,
+                sb_path_t directory);
 
-// function: container_set_command
+// function: sb_container_set_command
 //------------------------------------------------------------------------------
-void_t container_set_command(container_t *container, path_t command);
+sb_void_t sb_container_set_command(sb_container_t *container, sb_path_t command);
 
-// function: container_set_binding
+// function: sb_container_set_binding
 //------------------------------------------------------------------------------
-void_t container_set_binding(container_t *container,
-                path_t source,
-                path_t target);
+sb_void_t sb_container_set_binding(
+                sb_container_t *container,
+                sb_path_t source,
+                sb_path_t target);
 
-// function: container_set_masquerade
+// function: sb_container_set_masquerade
 //------------------------------------------------------------------------------
-void_t container_set_masquerade(container_t *container, char_t *masquerade);
+sb_void_t sb_container_set_masquerade(
+                sb_container_t *container,
+                sb_char_t *masquerade);
 
-// function: container_execute
+// function: sb_container_execute
 //------------------------------------------------------------------------------
-void_t container_execute(container_t *container);
+sb_void_t sb_container_execute(sb_container_t *container);
 
 #endif

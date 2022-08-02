@@ -1,7 +1,7 @@
 // includes: project
 //------------------------------------------------------------------------------
-#include "log.h"
-#include "console.h"
+#include "sb_log.h"
+#include "sb_console.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -17,19 +17,19 @@
 typedef struct {
         // member: id
         //----------------------------------------------------------------------
-        option_id_t id;
+        sb_option_id_t id;
 
         // member: argument
         //----------------------------------------------------------------------
-        char_t *argument;
+        sb_char_t *argument;
 
         // member: value
         //----------------------------------------------------------------------
-        bool_t value;
+        sb_bool_t value;
 
 } configuration_t;
 
-// variable: option_configs
+// variable: sb_option_configs
 //------------------------------------------------------------------------------
 static configuration_t configuration[] =
 {
@@ -41,11 +41,11 @@ static configuration_t configuration[] =
 
 // function: find_configuration
 //------------------------------------------------------------------------------
-static configuration_t *find_configuration(char_t *argument)
+static configuration_t *find_configuration(sb_char_t *argument)
 {
-        i32_t size = sizeof(configuration) / sizeof(configuration[0]);
+        sb_i32_t size = sizeof(configuration) / sizeof(configuration[0]);
 
-        for (i32_t i = 0; i < size; ++i)
+        for (sb_i32_t i = 0; i < size; ++i)
         {
                 if (!strcmp(configuration[i].argument, argument))
                 {
@@ -56,33 +56,37 @@ static configuration_t *find_configuration(char_t *argument)
         return NULL;
 }
 
-// function: console_create
+// function: sb_console_create
 //------------------------------------------------------------------------------
-void_t console_create(console_t *console, i32_t argc, char_t **argv)
+sb_void_t sb_console_create(
+                sb_console_t *console,
+                sb_i32_t argc,
+                sb_char_t **argv)
 {
         console->offset         = 1;
         console->offset_max     = argc;
         console->argument       = argv;
 }
 
-// function: console_get_option
+// function: sb_console_get_option
 //------------------------------------------------------------------------------
-bool_t console_get_option(console_t *console, option_t *option)
+sb_bool_t sb_console_get_option(sb_console_t *console, sb_option_t *option)
 {
         if (console->offset == console->offset_max)
         {
                 return false;
         }
 
-        char_t **argument = console->argument + console->offset;
+        sb_char_t **argument = console->argument + console->offset;
+
         configuration_t *config = find_configuration(argument[0]);
 
         if (!config)
         {
-                LOG_ERROR("Unknown option: %s", argument[0]);
+                SB_LOG_ERROR("Unknown option: %s", argument[0]);
         }
 
-        option_create(option, config->id, config->value ? argument[1] : NULL);
+        sb_option_create(option, config->id, config->value ? argument[1] : NULL);
 
         console->offset += config->value ?
                 OFFSET_INCREMENT_WITH_VALUE :

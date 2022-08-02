@@ -1,10 +1,10 @@
 // includes: project
 //------------------------------------------------------------------------------
-#include "log.h"
-#include "option.h"
-#include "handler.h"
-#include "console.h"
-#include "container.h"
+#include "sb_log.h"
+#include "sb_option.h"
+#include "sb_handler.h"
+#include "sb_console.h"
+#include "sb_container.h"
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -14,30 +14,30 @@
 
 // variable: container
 //------------------------------------------------------------------------------
-static container_t container;
+static sb_container_t container;
 
 // variable: console
 //------------------------------------------------------------------------------
-static console_t console;
+static sb_console_t console;
 
 // variable: handler
 //------------------------------------------------------------------------------
-static handler_t handler;
+static sb_handler_t handler;
 
 // variable: option
 //------------------------------------------------------------------------------
-static option_t option;
+static sb_option_t option;
 
 // function: signal_handler
 //------------------------------------------------------------------------------
 static void signal_handler(int signal)
 {
-        LOG_INFO("Captured signal: %d. Shutting down container.", signal);
+        SB_LOG_INFO("Captured signal: %d. Shutting down container.", signal);
 }
 
 // function: main
 //------------------------------------------------------------------------------
-int main(i32_t argc, char_t *argv[])
+int main(sb_i32_t argc, sb_char_t *argv[])
 {
         // procedure: handle signal
         //----------------------------------------------------------------------
@@ -45,28 +45,28 @@ int main(i32_t argc, char_t *argv[])
 
         // procedure: create container
         //----------------------------------------------------------------------
-        container_create(&container);
+        sb_container_create(&container);
 
         // procedure: create console
         //----------------------------------------------------------------------
-        console_create(&console, argc, argv);
+        sb_console_create(&console, argc, argv);
 
         // procedure: create handler
         //----------------------------------------------------------------------
-        handler_create(&handler, &container);
+        sb_handler_create(&handler, &container);
 
         // procedure: execute options
         //----------------------------------------------------------------------
-        while (console_get_option(&console, &option))
+        while (sb_console_get_option(&console, &option))
         {
-                handler_execute(&handler, &option);
+                sb_handler_execute(&handler, &option);
         }
 
         // procedure: execute container
         //----------------------------------------------------------------------
-        container_execute(&container);
+        sb_container_execute(&container);
 
         // procedure: shutdown container
         //----------------------------------------------------------------------
-        container_destroy(&container);
+        sb_container_destroy(&container);
 }

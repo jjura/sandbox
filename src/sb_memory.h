@@ -1,33 +1,33 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef SB_MEMORY_H
+#define SB_MEMORY_H
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "type.h"
+#include "sb_type.h"
 
-// type: memory_t
+// type: sb_memory_tt
 //------------------------------------------------------------------------------
 typedef struct {
         // member: size_t
         //----------------------------------------------------------------------
-        i32_t size;
+        sb_i32_t size;
 
         // member: allocation
         //----------------------------------------------------------------------
-        char_t *allocation;
+        sb_char_t *allocation;
 
-} memory_t;
+} sb_memory_tt;
 
-// function: memory_create
+// function: sb_memory_tcreate
 //------------------------------------------------------------------------------
-void_t memory_create(memory_t *memory);
+sb_void_t sb_memory_tcreate(sb_memory_tt *memory);
 
-// function: memory_destroy
+// function: sb_memory_tdestroy
 //------------------------------------------------------------------------------
-void_t memory_destroy(memory_t *memory);
+sb_void_t sb_memory_tdestroy(sb_memory_tt *memory);
 
-// function: memory_head
+// function: sb_memory_thead
 //------------------------------------------------------------------------------
-void_t *memory_head(memory_t *memory);
+sb_void_t *sb_memory_thead(sb_memory_tt *memory);
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef SB_LOG_H
+#define SB_LOG_H
 
 // includes: c
 //------------------------------------------------------------------------------
@@ -8,12 +8,12 @@
 
 // macro: LOG_INFO
 //------------------------------------------------------------------------------
-#define LOG_INFO(format, ...) \
+#define SB_LOG_INFO(format, ...) \
         printf("[ INFO ] " format "\n", __VA_ARGS__);
 
 // macro: LOG_ERROR
 //------------------------------------------------------------------------------
-#define LOG_ERROR(format, ...) \
+#define SB_LOG_ERROR(format, ...) \
 { \
         printf("[ ERROR ] " format "\n", __VA_ARGS__); \
         exit(EXIT_FAILURE); \

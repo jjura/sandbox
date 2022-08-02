@@ -1,24 +1,28 @@
-#ifndef FILE_H
-#define FILE_H
+#ifndef SB_TYPE_H
+#define SB_TYPE_H
 
-// includes: project
+// includes: c
 //------------------------------------------------------------------------------
-#include "type.h"
+#include <stdbool.h>
 
-// function: file_create
+// type: sb_void_t
 //------------------------------------------------------------------------------
-void_t file_create(path_t path);
+typedef void sb_void_t;
 
-// function: file_read
+// type: sb_bool_t
 //------------------------------------------------------------------------------
-void_t file_read(path_t path, char_t *buffer, i32_t size);
+typedef bool sb_bool_t;
 
-// function: file_exists
+// type: sb_char_t
 //------------------------------------------------------------------------------
-bool_t file_exists(path_t path);
+typedef char sb_char_t;
 
-// function: file_size
+// type: sb_path_t
 //------------------------------------------------------------------------------
-i32_t file_size(path_t path);
+typedef sb_char_t *sb_path_t;
+
+// type: sb_i32_t
+//------------------------------------------------------------------------------
+typedef signed int sb_i32_t;
 
 #endif

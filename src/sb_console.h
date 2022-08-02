@@ -1,34 +1,37 @@
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#ifndef SB_CONSOLE_H
+#define SB_CONSOLE_H
 
 // includes: project
 //------------------------------------------------------------------------------
-#include "type.h"
-#include "option.h"
+#include "sb_type.h"
+#include "sb_option.h"
 
-// type: console_t
+// type: sb_console_t
 //------------------------------------------------------------------------------
 typedef struct {
         // member: offset
         //----------------------------------------------------------------------
-        i32_t offset;
+        sb_i32_t offset;
 
         // member: offset_max
         //----------------------------------------------------------------------
-        i32_t offset_max;
+        sb_i32_t offset_max;
 
         // member: argument
         //----------------------------------------------------------------------
-        char_t **argument;
+        sb_char_t **argument;
 
-} console_t;
+} sb_console_t;
 
-// function: console_create
+// function: sb_console_create
 //------------------------------------------------------------------------------
-void_t console_create(console_t *console, i32_t argc, char_t **argv);
+sb_void_t sb_console_create(
+                sb_console_t *console,
+                sb_i32_t argc,
+                sb_char_t **argv);
 
-// function: console_get_option
+// function: sb_console_get_option
 //------------------------------------------------------------------------------
-bool_t console_get_option(console_t *console, option_t *option);
+sb_bool_t sb_console_get_option(sb_console_t *console, sb_option_t *option);
 
 #endif
