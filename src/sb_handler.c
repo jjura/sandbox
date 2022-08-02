@@ -66,10 +66,10 @@ static sb_void_t handle_masquerade(sb_handler_t *handler, sb_option_t *option)
 //------------------------------------------------------------------------------
 static sb_handler_function_t handlers[] =
 {
-        [ OPTION_ID_BINDING ]    = handle_binding,
-        [ OPTION_ID_COMMAND ]    = handle_command,
-        [ OPTION_ID_DIRECTORY ]  = handle_directory,
-        [ OPTION_ID_MASQUERADE ] = handle_masquerade,
+        [ SB_OPTION_ID_BINDING ]    = handle_binding,
+        [ SB_OPTION_ID_COMMAND ]    = handle_command,
+        [ SB_OPTION_ID_DIRECTORY ]  = handle_directory,
+        [ SB_OPTION_ID_MASQUERADE ] = handle_masquerade,
 };
 
 // function: sb_handler_create

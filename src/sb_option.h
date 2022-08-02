@@ -8,10 +8,10 @@
 // type: sb_option_id_t
 //------------------------------------------------------------------------------
 typedef enum {
-        OPTION_ID_BINDING,
-        OPTION_ID_COMMAND,
-        OPTION_ID_DIRECTORY,
-        OPTION_ID_MASQUERADE,
+        SB_OPTION_ID_BINDING,
+        SB_OPTION_ID_COMMAND,
+        SB_OPTION_ID_DIRECTORY,
+        SB_OPTION_ID_MASQUERADE,
 } sb_option_id_t;
 
 // type: sb_option_t
