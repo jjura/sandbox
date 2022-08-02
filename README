@@ -1,0 +1,47 @@
+SANDBOX
+        Sandbox is a simple, lightweight and dependency free container system
+        written in C programming language.
+
+        Main purpose for this project was to learn more about linux and its
+        namespace feature, used in many popular container projects.
+
+LICENSE
+        GPL
+
+BUILDING
+        The build process of this project is very simple since it doesn't
+        require any external libraries:
+
+        To get the final binary follow these steps:
+                1. Clone the repository from: https://github.com/jjura/sandbox.
+                2. Enter the repository directory and execute 'make' command.
+                3. The build output: bin/sandbox.
+
+USAGE
+        Sandbox must be called as a root or sudo user.
+        It offers the following command-line options:
+
+        --binding:
+                        Used to bind host's file / directory under specified
+                        location inside container.
+
+        --command:
+                        Used to specify command to be executed inside container
+                        after the container starts.
+
+        --directory:
+                        Used to specify directory to be a root of container.
+
+        --masquerade:
+                        Used to specify host ethernet interface to be used by NAT
+                        for container's virtual ethernet configuration.
+
+                        If not specified, container's virtual ethernet interface
+                        is not created and host's interfaces are used.
+
+        The masquerade option requires iproute2 and nft packages to be installed
+        on the host to have it working correctly.
+
+        Usage example:
+        
+        # sandbox --directory /usr/local/containers/debian
